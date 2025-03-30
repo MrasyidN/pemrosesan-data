@@ -3,7 +3,8 @@ import time
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
- 
+from transform import transform_data, transform_to_DataFrame  # Mengimpor fungsi dari modul transform
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -78,13 +79,12 @@ def main():
     """Fungsi utama untuk keseluruhan proses scraping hingga menyimpannya."""
     BASE_URL = 'https://books.toscrape.com/catalogue/page-{}.html'
     all_books_data = scrape_book(BASE_URL)
-    df = pd.DataFrame(all_books_data)
-    print(df)
- 
-    # Simpan ke dalam file CSV
-    df.to_csv('books_data.csv', index=False, encoding='utf-8')
-
-    print("Data berhasil disimpan ke books_data.csv")
+    if all_books_data:
+        DataFrame = transform_to_DataFrame(all_books_data)   # Mengubah variabel all_books_data menjadi DataFrame.
+        DataFrame = transform_data(DataFrame, 20000)   # Mentransformasikan data
+        print(DataFrame)
+    else:
+        print("Tidak ada data yang ditemukan.")
  
 if __name__ == '__main__':
     main()
